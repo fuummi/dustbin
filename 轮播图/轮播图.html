@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    div {
+        position: relative;
+        padding: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 1200px;
+        height: 600px;
+    }
+
+    img {
+        position: absolute;
+        top: 150px;
+
+        transition: 0.6s;
+    }
+
+    .img0 {
+        z-index: 1;
+        left: 0px;
+        width: 550px;
+        height: 300px;
+    }
+
+    .img1 {
+        z-index: 2;
+        top: 120px;
+        left: 270px;
+        height: 360px;
+        width: 660px;
+    }
+
+    .img2 {
+        z-index: 1;
+        left: 650px;
+        width: 550px;
+        height: 300px;
+    }
+
+
+    .img3 {
+        z-index: 0;
+        width: 550px;
+        height: 300px;
+        left: 325px;
+    }
+
+    .pre {
+        position: absolute;
+        z-index: 4;
+        width: 50px;
+        font-size: 40px;
+        color: white;
+        background-color: grey;
+        border-radius: 50%;
+        cursor: pointer;
+        left: 0;
+        margin-top: 275px;
+        opacity: 80%;
+        text-align: center;
+    }
+
+    .next {
+        position: absolute;
+        z-index: 4;
+        width: 50px;
+        font-size: 40px;
+        color: white;
+        background-color: grey;
+        border-radius: 50%;
+        cursor: pointer;
+        right: 0;
+        margin-top: 275px;
+        opacity: 70%;
+        text-align: center;
+    }
+
+    .dot{
+        position: absolute;
+        display: block;
+        top: 540px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .dotIn {
+        float: left;
+        display: block;
+        margin: 10px;
+        height: 22px;
+        width: 22px;
+        background-color: grey;
+        border-radius: 50%;
+    }
+
+    li {
+        float: left;
+        display: block;
+        margin: 10px;
+        height: 20px;
+        width: 20px;
+        border: 2px solid grey;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .but1{
+        display: none;
+    }
+    .but2{
+        display: none;
+    }
+</style>
+
+<body>
+    <div>
+        <span class="but1"  > &lt </span>
+        <img src="./0.png" class="img0" id="0">
+        <img src="./1.png" class="img1" id="1">
+        <img src="./2.png" class="img2" id="2">
+        <img src="./3.png" class="img3" id="3">
+        <img src="./4.png" class="img3" id="4">
+        <img src="./5.png" class="img3" id="5">
+        <span class="but2" > &gt </span>
+        <span class="dot">
+            <ol></ol>
+        </span>
+    </div>
+    <script>
+        let img = document.querySelectorAll('img')
+        let ol = document.querySelector('ol')
+        let pre = document.querySelector('.but1')
+        let next = document.querySelector('.but2')
+        let dot = document.querySelector('.dot')
+        document.body.style.zoom = 0.75;//一开始写的时候div弄得太大了（汗）缩放一下，下次写之前一定算好      
+        let timerNext = setInterval(forTimerNext, 3000)//定时播放    
+        for (let i = 0; i < img.length; i++) {       //用循环添加圆点
+            let li = document.createElement('li')
+            ol.appendChild(li);
+        }
+        let li = document.querySelectorAll('li')
+        //console.log(li);
+        ol.children[1].className = 'dotIn'  //第二张默认在最上面 
+        let arr = [];
+        let arr1 = [];//新建空数组,存Img,li,解决伪数组不能使用方法的问题
+        for (let i = 0; i < img.length; i++) {
+            arr[i] = img[i];
+            arr1[i] = li[i];
+        }
+        for (let i = 0; i < img.length; i++) { //用for循环给每个li绑定事件
+            arr1[i].onmouseover = function () {
+                clearInterval(timerNext)
+                let flag = arr[1].id      //先判断当前在最上面的图片索引号
+                let k = i                 //新建一个变量k，防止下面while                              
+                while (k > flag) {        //执行时改变i对判断产生影响(一开始直接用i，循环完i递减，会出错)
+                    getNext()             //当点击的图片序号大于当前图片序号，前进至所点的图片
+                    k--
+                }
+                while (k < flag) {        //反之
+                    getPre()
+                    k++
+                }
+                for (let j = 0; j < img.length; j++) {  //用for循环给每个li清除样式
+                    arr[j].className = 'img3'
+                    arr1[j].className = ''
+                }
+                arr[0].className = 'img0'
+                arr[1].className = 'img1'//根据索引号赋予图片样式 0：左边 1：中间 2：右边
+                arr[2].className = 'img2'
+                arr1[1].className = 'dotIn'//给对应圆点修改类名
+                timerNext = setInterval(forTimerNext, 3000)
+            }
+        }
+        let len = img.length - 1;//数组长度减一，表示图片索引号
+        //console.log(len);
+        function getNext() {
+            let throww = arr[0]//存下arr数组的第一个元素
+            arr.shift()//扔掉arr数组的第一个元素
+            arr.push(throww)//把扔掉的元素push，实现换序
+            let throww1 = arr1[0]//对小圆点li同理
+            arr1.shift()
+            arr1.push(throww1)
+        }
+        next.onclick = function () {
+            clearInterval(timerNext)
+            getNext()
+            arr.className = 'img3'//先重置图片样式 全设为在后面
+            arr[0].className = 'img0'
+            arr[1].className = 'img1'//根据索引号赋予图片样式 0：左边 1：中间 2：右边
+            arr[2].className = 'img2'
+            arr[3].className = 'img3'
+            arr[len].className = 'img3'//刚换下来的为 3：后面  
+            arr1[1].className = 'dotIn'
+            arr1[0].className = ''
+            timerNext = setInterval(forTimerNext, 3000)
+        }
+        //next函数只改变图片数组的顺序，可以用在其他地方
+        //next.onclick函数既改变了顺序又改变了样式，只用于切换图片
+        function getPre() {         //同上,原理相反
+            let throww = arr[len]
+            arr.pop();
+            arr.unshift(throww)
+            let throww1 = arr1[len]
+            arr1.pop();
+            arr1.unshift(throww1)
+        }
+        pre.onclick = function () {
+            clearInterval(timerNext)
+            getPre()
+            arr[0].className = 'img0'
+            arr[1].className = 'img1'
+            arr[2].className = 'img2'
+            arr[3].className = 'img3'
+            arr[len].className = 'img3'
+            arr1[1].className = 'dotIn'
+            arr1[2].className = ''
+            timerNext = setInterval(forTimerNext, 3000)
+        }
+        function forTimerNext() {
+            getNext()
+            arr.className = 'img3'
+            arr[0].className = 'img0'
+            arr[1].className = 'img1'
+            arr[2].className = 'img2'
+            arr[3].className = 'img3'
+            arr[len].className = 'img3'
+            arr1[1].className = 'dotIn'
+            arr1[0].className = ''
+        }
+        pre.onmouseover = function () {       //鼠标移至/移出按钮，按钮显示/消失
+            pre.className = 'pre'
+            next.className = 'next'
+        }
+        next.onmouseover = function () {
+            pre.className = 'pre'
+            next.className = 'next'
+        }
+        pre.onmouseleave = function () {
+            pre.className = 'but1'
+            next.className = 'but2'
+        }
+        next.onmouseleave = function () {
+            pre.className = 'but1'
+            next.className = 'but2'
+        }
+        for (let i = 0; i < img.length; i++) {
+            img[i].onmouseenter = function () {   //鼠标移至最上面的图片上，清除定时播放
+                clearInterval(timerNext)
+                pre.className = 'pre'
+                next.className = 'next'
+                //console.log('停'); 
+            }
+            img[i].onmouseleave = function () {                  //鼠标移开，恢复定时播放
+                timerNext = setInterval(forTimerNext, 3000)
+                pre.className = 'but1'
+                next.className = 'but2'
+                //console.log('动');
+            }
+        }
+        //加入定时器和清除定时器之后如果鼠标频繁快速地进出图片和点击按钮会出现图片切换混乱的情况，造成这种情况的原因是什么呢？
+    </script>
+</body>
+</html>
