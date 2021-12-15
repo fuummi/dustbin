@@ -42,7 +42,7 @@ function sayIdolPro(outlook,mind) {
 let idol3 = ['漂亮', '温柔']
 Function.prototype.myApply = function (obj,arr) {
     //console.log(this);//sayIdolPro函数
-    //console.log(obj);//传入的第一个实参(对象)
+    //console.log(obj);//传入的第一个实参(作为sayIdolPro的this)
     //console.log(arr);//传入的第二个实参(数组)
     obj.fn = this
     obj.fn(arr[0],arr[1])
