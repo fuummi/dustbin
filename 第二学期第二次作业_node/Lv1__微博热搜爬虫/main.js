@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path')
 const puppeteer = require('puppeteer');
 const getTime = require('./getTime');//获取当前时间模块
 
@@ -16,11 +17,16 @@ const getTime = require('./getTime');//获取当前时间模块
         if (i === 0) { //除去第一个不参与排名的方块
           continue
         }
-        title.push(`${i}  ${message[i].innerText} \n ${message[i].children[0].attributes["href"].value} \n\n`);
+        const word = String(message[i].innerText).replace(/\d{6,}$/,'')
+        const num = String(message[i].innerText).match(/\d+$/)
+        if (word == null) { //除去广告
+            continue
+        }
+        title.push(` 排名:${i} \n 标题:${word} \n 点击量:${num}\n 链接:${message[i].children[0].attributes["href"].value} \n\n`);
       }
       return title;
     })
-    const dirname = './微博热搜'
+    const dirname = path.resolve(__dirname,'./微博热搜')
     if (!fs.existsSync(dirname)) { //不存在文件夹则创建
       fs.mkdir(dirname, err => {})
     }
@@ -29,7 +35,7 @@ const getTime = require('./getTime');//获取当前时间模块
       flag: 'a+'
     }
     for (let i = 0; i < data.length; i++) { //写入txt
-      fs.writeFile(`./微博热搜/${getTime.getTime()}.txt`, data[i], option, (err) => {})
+      fs.writeFileSync(`${path.resolve(__dirname,'./微博热搜')}/${getTime.getTime()}.txt`, data[i], option, (err) => {})
     }
     console.log(`写入完成！热搜时间:${getTime.getTime()}`);
     browser.close();
