@@ -1,0 +1,38 @@
+
+.box1 {
+    width: 500px;
+    padding: 10px;
+}
+
+.box1 div {
+    width: 180px;
+    height: 50px;
+    background-color: grey;
+}
+
+/* 答题区域：*/
+[href] {
+    text-decoration: none;
+}
+.box1 > p {
+    color: red;
+}
+.box1 div:hover {
+    background-color: yellow;
+}
+.box1 + p {
+    color: purple;
+}
+
+/* 趣味推理题 */
+/* 已知让第一个li的字体大小变为20px的代码为：*/
+.box1 ul li:nth-child(1) {
+    font-size: 20px;
+}
+.box1 ul li:nth-child(2) {
+    font-size: 30px;
+}
+.box1 ul li:nth-child(3) {
+    font-size: 40px;
+}
+/* 请让第二个和第三个li元素完成它们想要的变换！提示：大家可以查一下:nth-child伪类选择器*/
